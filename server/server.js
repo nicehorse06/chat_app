@@ -1,12 +1,25 @@
-var express = require('express');
-var path = require('path');
-var app = express();
+const express = require('express');
+const path = require('path');
+const socketIO = require('socket.io');
+const http = require('http');
 
-var publicPath = path.join(__dirname,'../public');
+
+const publicPath = path.join(__dirname,'../public');
+const port = process.env.PORT || 8080;
+var app = express();
+var server = http.createServer(app);
+var io = socketIO(server);
+
 app.use(express.static(publicPath));
 
-const port = process.env.PORT || 8080;
+io.on('connection',(socket) => {
+  console.log('some one connect');
 
-app.listen(port,() => {
+  socket.on('disconnec',() => {
+    console.log('some one disconnect');
+  })
+});
+
+server.listen(port,() => {
   console.log(`Server is up on port ${port}`);
 });
